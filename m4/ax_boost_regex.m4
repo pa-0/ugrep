@@ -23,9 +23,11 @@
 AC_DEFUN([AX_BOOST_REGEX],
 [
     AC_ARG_WITH([boost-regex],
-    AS_HELP_STRING([--with-boost-regex@<:@=special-lib@:>@],
-                   [use the Regex library from boost - it is possible to specify a path to include/boost and lib/libboost_regex-mt
-                        e.g. --with-boost-regex=/opt/local ]),
+[  --with-boost-regex@<:@=special-lib@:>@
+                          use the Boost Regex library, optionally specify a
+                          path to include/boost and lib/libboost_regex-mt e.g.
+                          --with-boost-regex=/opt/local
+  --without-boost-regex   to disable Boost Regex usage completely],
         [
         if test "$withval" = "no"; then
             want_boost="no"
@@ -55,9 +57,8 @@ AC_DEFUN([AX_BOOST_REGEX],
         AC_CACHE_CHECK([whether the Boost::Regex library is available],
                        [ax_cv_boost_regex],
         [AC_LANG_PUSH([C++])
-             AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[@%:@include <boost/regex.hpp>
-                                                ]],
-                                   [[boost::regex r(); return 0;]])],
+             AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[@%:@include <boost/regex.hpp>]],
+                                                [[boost::regex r()]])],
                    [ax_cv_boost_regex=yes],
                    [ax_cv_boost_regex=no])
          AC_LANG_POP([C++])

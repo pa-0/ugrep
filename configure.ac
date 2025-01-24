@@ -1,4 +1,4 @@
-AC_INIT([ugrep],[6.4.1],[https://github.com/Genivia/ugrep/issues],[ugrep],[https://ugrep.com])
+AC_INIT([ugrep],[7.2.0],[https://github.com/Genivia/ugrep/issues],[ugrep],[https://ugrep.com])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 AC_CONFIG_HEADERS([config.h])
 AC_COPYRIGHT([Copyright (C) 2019-2024 Robert van Engelen, Genivia Inc.])
@@ -29,7 +29,7 @@ save_LIBS=$LIBS
 save_CFLAGS=$CFLAGS
 LIBS=$PTHREAD_LIBS
 CFLAGS=$PTHREAD_CFLAGS
-AC_CHECK_FUNCS([sched_setaffinity cpuset_setaffinity pthread_setaffinity_np pthread_setschedprio setpriority],[break])
+AC_CHECK_FUNCS([pthread_set_qos_class_self_np sched_setaffinity cpuset_setaffinity pthread_setaffinity_np pthread_setschedprio setpriority],[break])
 LIBS=$save_LIBS
 CFLAGS=$save_CFLAGS
 
@@ -74,7 +74,7 @@ AC_ARG_ENABLE(avx2,
 # --disable-neon fallback option if cross compilation fails to disable NEON/AArch64 CPU extensions
 AC_ARG_ENABLE(neon,
   [AS_HELP_STRING([--disable-neon],
-                 [disable NEON CPU extensions])],
+                 [disable NEON/AArch64 CPU extensions])],
   [with_no_neon="yes"],
   [with_no_neon="no"])
 

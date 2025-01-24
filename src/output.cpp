@@ -30,7 +30,7 @@
 @file      output.cpp
 @brief     Output management
 @author    Robert van Engelen - engelen@genivia.com
-@copyright (c) 2019,2024, Robert van Engelen, Genivia Inc. All rights reserved.
+@copyright (c) 2019,2025, Robert van Engelen, Genivia Inc. All rights reserved.
 @copyright (c) BSD-3 License - see LICENSE.txt
 */
 
@@ -678,7 +678,8 @@ void Output::format(const char *format, size_t matches)
 
       case '$':
         sep = arg;
-        len = s - arg - 1;
+        if (arg != NULL)
+          len = s - arg - 1;
         break;
 
       case 't':
@@ -907,6 +908,47 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         else
         {
           quote(pathname, strlen(pathname));
+        }
+        break;
+
+      case 'I':
+        if (flag_with_filename && (heading || !partname.empty()))
+        {
+          if (arg != NULL)
+            str(arg, s - arg - 1);
+          if (!partname.empty())
+          {
+            std::string name;
+            if (heading)
+              name = pathname;
+            name.push_back('{');
+            name.append(partname);
+            name.push_back('}');
+            xml(name.c_str(), name.size());
+          }
+          else
+          {
+            xml(pathname, strlen(pathname));
+          }
+          if (sep != NULL)
+            str(sep, len);
+          else
+            str(flag_separator);
+        }
+        break;
+
+      case 'i':
+        if (!partname.empty())
+        {
+          std::string name(pathname);
+          name.push_back('{');
+          name.append(partname);
+          name.push_back('}');
+          xml(name.c_str(), name.size());
+        }
+        else
+        {
+          xml(pathname, strlen(pathname));
         }
         break;
 
@@ -1165,17 +1207,45 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         break;
 
       case 'o':
+      case '#':
         if (arg != NULL)
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            str(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+          {
+            const char *s = cap.first;
+            size_t n = cap.second;
+            if (flag_hex || (flag_with_hex && !reflex::isutf8(s, s + n)))
+            {
+              if (width > 0 && static_cast<size_t>(width) < n)
+                n = width;
+              hex(s, n);
+            }
+            else
+            {
+              if (width > 0)
+                utf8strn(s, n, width);
+              else
+                str(s, n);
+            }
+          }
         }
         else
         {
-          size_t n;
-          const char *s = match_context(matcher, plus, width, n);
-          str(s, n);
+          const char *s = matcher->begin();
+          size_t n = matcher->size();
+          if (flag_hex || (flag_with_hex && !reflex::isutf8(s, s + n)))
+          {
+            if (width > 0 && static_cast<size_t>(width) < n)
+              n = width;
+            hex(s, n);
+          }
+          else
+          {
+            if (width != 0)
+              s = match_context(matcher, plus, width, n);
+            str(s, n);
+          }
         }
         break;
 
@@ -1188,7 +1258,7 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            quote(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+            quote(cap.first, width > 0 ? utf8cut(cap.first, cap.second, width) : cap.second);
         }
         else
         {
@@ -1220,7 +1290,7 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            cpp(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+            cpp(cap.first, width > 0 ? utf8cut(cap.first, cap.second, width) : cap.second);
         }
         else
         {
@@ -1252,7 +1322,7 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            csv(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+            csv(cap.first, width > 0 ? utf8cut(cap.first, cap.second, width) : cap.second);
         }
         else
         {
@@ -1284,7 +1354,7 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            json(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+            json(cap.first, width > 0 ? utf8cut(cap.first, cap.second, width) : cap.second);
         }
         else
         {
@@ -1316,7 +1386,7 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            xml(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+            xml(cap.first, width > 0 ? utf8cut(cap.first, cap.second, width) : cap.second);
         }
         else
         {
@@ -1348,7 +1418,7 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         {
           std::pair<const char*,size_t> cap = capture(matcher, arg);
           if (cap.first != NULL)
-            hex(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
+            hex(cap.first, width > 0 ? utf8cut(cap.first, cap.second, width) : cap.second);
         }
         else
         {
@@ -1385,7 +1455,8 @@ bool Output::format(const char *format, const char *pathname, const std::string&
 
       case '$':
         sep = arg;
-        len = s - arg - 1;
+        if (arg != NULL)
+          len = s - arg - 1;
         break;
 
       case 'R':
@@ -1426,14 +1497,6 @@ bool Output::format(const char *format, const char *pathname, const std::string&
         if (next)
           chr(c);
         break;
-
-      case '#':
-      {
-        std::pair<const char*,size_t> cap = capture(matcher, arg);
-        if (cap.first != NULL)
-          str(cap.first, width > 0 ? std::min<size_t>(cap.second, width) : cap.second);
-        break;
-      }
 
       default:
         chr(c);
@@ -1614,6 +1677,47 @@ void Output::format_invert(const char *format, const char *pathname, const std::
         else
         {
           quote(pathname, strlen(pathname));
+        }
+        break;
+
+      case 'I':
+        if (flag_with_filename && (heading || !partname.empty()))
+        {
+          if (arg != NULL)
+            str(arg, s - arg - 1);
+          if (!partname.empty())
+          {
+            std::string name;
+            if (heading)
+              name = pathname;
+            name.push_back('{');
+            name.append(partname);
+            name.push_back('}');
+            xml(name.c_str(), name.size());
+          }
+          else
+          {
+            xml(pathname, strlen(pathname));
+          }
+          if (sep != NULL)
+            str(sep, len);
+          else
+            str(flag_separator);
+        }
+        break;
+
+      case 'i':
+        if (!partname.empty())
+        {
+          std::string name(pathname);
+          name.push_back('{');
+          name.append(partname);
+          name.push_back('}');
+          xml(name.c_str(), name.size());
+        }
+        else
+        {
+          xml(pathname, strlen(pathname));
         }
         break;
 
@@ -1799,7 +1903,8 @@ void Output::format_invert(const char *format, const char *pathname, const std::
 
       case '$':
         sep = arg;
-        len = s - arg - 1;
+        if (arg != NULL)
+          len = s - arg - 1;
         break;
 
       case 'R':

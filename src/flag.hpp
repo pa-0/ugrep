@@ -30,7 +30,7 @@
 @file      flag.hpp
 @brief     Tri-state Flag class and global flags set by options
 @author    Robert van Engelen - engelen@genivia.com
-@copyright (c) 2019,2024, Robert van Engelen, Genivia Inc. All rights reserved.
+@copyright (c) 2019,2025, Robert van Engelen, Genivia Inc. All rights reserved.
 @copyright (c) BSD-3 License - see LICENSE.txt
 */
 
@@ -107,6 +107,7 @@ extern bool flag_no_filename;
 extern bool flag_no_messages;
 extern bool flag_not;
 extern bool flag_null;
+extern bool flag_null_data;
 extern bool flag_only_line_number;
 extern bool flag_only_matching;
 extern bool flag_perl_regexp;

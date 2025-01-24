@@ -30,7 +30,7 @@
 @file      zthread.hpp
 @brief     file decompression threads
 @author    Robert van Engelen - engelen@genivia.com
-@copyright (c) 2019,2024, Robert van Engelen, Genivia Inc. All rights reserved.
+@copyright (c) 2019,2025, Robert van Engelen, Genivia Inc. All rights reserved.
 @copyright (c) BSD-3 License - see LICENSE.txt
 */
 
@@ -60,6 +60,7 @@ inline int pipe(int fd[2])
     fd[1] = _open_osfhandle(reinterpret_cast<intptr_t>(pipe_w), _O_WRONLY);
     return 0;
   }
+  errno = GetLastError();
   return -1;
 }
 
@@ -232,10 +233,12 @@ struct Zthread {
       pipe_fd[0] = -1;
 
       // if extracting and the decompression filter thread is not yet waiting, then wait until decompression thread closed its end of the pipe
-      std::unique_lock<std::mutex> lock(pipe_mutex);
-      if (!is_waiting)
-        pipe_close.wait(lock);
-      lock.unlock();
+      {
+        std::unique_lock<std::mutex> lock(pipe_mutex);
+        if (!is_waiting)
+          pipe_close.wait(lock);
+        lock.unlock();
+      }
 
       // partnameref is not assigned yet, used only when this decompression thread is chained
       is_assigned = false;

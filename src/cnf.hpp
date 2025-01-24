@@ -30,7 +30,7 @@
 @file      cnf.hpp
 @brief     CNF class for normalization of Boolean search queries
 @author    Robert van Engelen - engelen@genivia.com
-@copyright (c) 2019,2024, Robert van Engelen, Genivia Inc. All rights reserved.
+@copyright (c) 2019,2025, Robert van Engelen, Genivia Inc. All rights reserved.
 @copyright (c) BSD-3 License - see LICENSE.txt
 */
 
@@ -119,7 +119,7 @@ class CNF {
   // compile --bool search query into operator tree, normalize to CNF, and populate CNF AND-list of ALT-term lists
   void compile(const char *pattern)
   {
-    OpTree(pattern, terms);
+    (void)OpTree(pattern, terms);
   }
 
   // return the CNF AND-list of ALT-term lists

@@ -30,7 +30,7 @@
 @file      stats.cpp
 @brief     collect global statistics - static, partially thread-safe
 @author    Robert van Engelen - engelen@genivia.com
-@copyright (c) 2019,2024, Robert van Engelen, Genivia Inc. All rights reserved.
+@copyright (c) 2019,2025, Robert van Engelen, Genivia Inc. All rights reserved.
 @copyright (c) BSD-3 License - see LICENSE.txt
 */
 
@@ -71,7 +71,7 @@ void Stats::report(FILE *output)
 
   if (flag_index && indexed > 0)
   {
-    fprintf(stderr, "Skipped %zu file%s of %zu (%.4g%%) not matching %zu indexes\n", skipped, (skipped == 1 ? "" : "s"), sf - ff, 100.0 * skipped / (sf - ff), indexed);
+    fprintf(output, "Skipped %zu file%s of %zu (%.4g%%) not matching %zu indexes\n", skipped, (skipped == 1 ? "" : "s"), sf - ff, 100.0 * skipped / (sf - ff), indexed);
     if (changed > 0 || added > 0)
     {
       fprintf(output, "Detected outdated or missing index files, run ugrep-indexer to re-index:\n");

@@ -1,4 +1,4 @@
-.TH UGREP-INDEXER "1" "August 08, 2024" "ugrep-indexer 6.4.1" "User Commands"
+.TH UGREP-INDEXER "1" "January 23, 2025" "ugrep-indexer 7.2.0" "User Commands"
 .SH NAME
 \fBugrep-indexer\fR -- file indexer to accelerate recursive searching
 .SH SYNOPSIS
@@ -137,15 +137,18 @@ encountered during indexing.  The default FILE is `.gitignore'.
 This option may be repeated to specify additional files.
 .TP
 \fB\-z\fR, \fB\-\-decompress\fR
-Index the contents of compressed files and archives.  When used
-with option \fB\-\-zmax\fR=\fINUM\fR, indexes the contents of compressed files
-and archives stored within archives up to NUM levels deep.
+Index the contents of compressed files and archives.  Hidden files
+in archives are ignored unless option \fB\-.\fR or \fB\-\-hidden\fR is specified.
+Option \fB\-I\fR or \fB\-\-ignore\-binary\fR ignores compressed binary files.  When
+used with option \fB\-\-zmax\fR=\fINUM\fR, indexes the contents of compressed
+files and archives stored within archives up to NUM levels deep.
 Supported compression formats: gzip (.gz), compress (.Z), zip, 7z,
 bzip2 (requires suffix .bz, .bz2, .bzip2, .tbz, .tbz2, .tb2, .tz2),
 lzma and xz (requires suffix .lzma, .tlz, .xz, .txz),
 lz4 (requires suffix .lz4),
 zstd (requires suffix .zst, .zstd, .tzst),
-brotli (requires suffix .br).
+brotli (requires suffix .br),
+bzip3 (requires suffix .bz3).
 .TP
 \fB\-\-zmax\fR=\fINUM\fR
 When used with option \fB\-z\fR (\fB\-\-decompress\fR), indexes the contents of
@@ -200,7 +203,7 @@ tree to non-indexed:
 .IP
 $ ugrep-indexer -d
 .SH COPYRIGHT
-Copyright (c) 2021-2024 Robert A. van Engelen <engelen@acm.org>
+Copyright (c) 2021-2025 Robert A. van Engelen <engelen@acm.org>
 .PP
 \fBugrep-indexer\fR is released under the BSD\-3 license.  All parts of the
 software have reasonable copyright terms permitting free redistribution.  This

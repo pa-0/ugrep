@@ -1,4 +1,4 @@
-.TH UGREP "1" "August 08, 2024" "ugrep 6.4.1" "User Commands"
+.TH UGREP "1" "January 23, 2025" "ugrep 7.2.0" "User Commands"
 .SH NAME
 \fBugrep\fR, \fBug\fR -- file pattern searcher
 .SH SYNOPSIS
@@ -135,7 +135,7 @@ the match or shortens the match.  See also options \fB\-B\fR, \fB\-C\fR and \fB\
 Process a binary file as if it were text.  This is equivalent to
 the \fB\-\-binary\-files\fR=text option.  This option might output binary
 garbage to the terminal, which can have problematic consequences if
-the terminal driver interprets some of it as commands.
+the terminal driver interprets some of it as terminal commands.
 .TP
 \fB\-\-all\fR, \-@
 Search all files except hidden: cancel previous file and directory
@@ -221,9 +221,9 @@ the match.  See also options \fB\-A\fR, \fB\-B\fR and \fB\-y\fR.
 .TP
 \fB\-c\fR, \fB\-\-count\fR
 Only a count of selected lines is written to standard output.
-If \fB\-o\fR or \fB\-u\fR is specified, counts the number of patterns matched.
-If \fB\-v\fR is specified, counts the number of non\-matching lines.  If
-\fB\-m\fR1, (with a comma or \fB\-\-min\-count\fR=1) is specified, counts only
+When \fB\-o\fR or \fB\-u\fR is specified, counts the number of patterns matched.
+When \fB\-v\fR is specified, counts the number of non\-matching lines.
+When \fB\-m\fR1, (with a comma or \fB\-\-min\-count\fR=1) is specified, counts only
 matching files without outputting zero matches.
 .TP
 \fB\-\-color\fR[=\fIWHEN\fR], \fB\-\-colour\fR[=\fIWHEN\fR]
@@ -270,23 +270,23 @@ Do not confirm actions in \fB\-Q\fR query TUI.  The default is confirm.
 Output file matches in C++.  See also options \fB\-\-format\fR and \fB\-u\fR.
 .TP
 \fB\-\-csv\fR
-Output file matches in CSV.  If \fB\-H\fR, \fB\-n\fR, \fB\-k\fR, or \fB\-b\fR is specified,
+Output file matches in CSV.  When \fB\-H\fR, \fB\-n\fR, \fB\-k\fR, or \fB\-b\fR is specified,
 additional values are output.  See also options \fB\-\-format\fR and \fB\-u\fR.
 .TP
 \fB\-D\fR \fIACTION\fR, \fB\-\-devices\fR=\fIACTION\fR
 If an input file is a device, FIFO or socket, use ACTION to process
 it.  By default, ACTION is `skip', which means that devices are
-silently skipped.  If ACTION is `read', devices read just as if
+silently skipped.  When ACTION is `read', devices read just as if
 they were ordinary files.
 .TP
 \fB\-d\fR \fIACTION\fR, \fB\-\-directories\fR=\fIACTION\fR
 If an input file is a directory, use ACTION to process it.  By
 default, ACTION is `skip', i.e., silently skip directories unless
-specified on the command line.  If ACTION is `read', warn when
-directories are read as input.  If ACTION is `recurse', read all
+specified on the command line.  When ACTION is `read', warn when
+directories are read as input.  When ACTION is `recurse', read all
 files under each directory, recursively, following symbolic links
 only if they are on the command line.  This is equivalent to the \fB\-r\fR
-option.  If ACTION is `dereference\-recurse', read all files under
+option.  When ACTION is `dereference\-recurse', read all files under
 each directory, recursively, following symbolic links.  This is
 equivalent to the \fB\-R\fR option.
 .TP
@@ -316,8 +316,9 @@ after option \fB\-f\fR or after the FILE arguments.
 .TP
 \fB\-\-encoding\fR=\fIENCODING\fR
 The encoding format of the input.  The default ENCODING is binary
-and UTF\-8 which are the same.  Note that option \fB\-U\fR specifies binary
-PATTERN matching (text matching is the default.)  ENCODING can be:
+or UTF\-8 which are treated the same.  Therefore, \fB\-\-encoding\fR=binary
+has no effect.  Note that option \fB\-U\fR or \fB\-\-binary\fR specifies binary
+PATTERN matching (text matching is the default).  ENCODING can be:
 `binary', `ASCII', `UTF\-8', `UTF\-16', `UTF\-16BE', `UTF\-16LE',
 `UTF\-32', `UTF\-32BE', `UTF\-32LE', `LATIN1', `ISO\-8859\-1',
 `ISO\-8859\-2', `ISO\-8859\-3', `ISO\-8859\-4', `ISO\-8859\-5',
@@ -326,7 +327,7 @@ PATTERN matching (text matching is the default.)  ENCODING can be:
 `ISO\-8859\-15', `ISO\-8859\-16', `MAC', `MACROMAN', `EBCDIC', `CP437',
 `CP850', `CP858', `CP1250', `CP1251', `CP1252', `CP1253', `CP1254',
 `CP1255', `CP1256', `CP1257', `CP1258', `KOI8\-R', `KOI8\-U',
-`KOI8\-RU'.
+`KOI8\-RU', `null\-data'.
 .TP
 \fB\-\-exclude\fR=\fIGLOB\fR
 Exclude files whose name matches GLOB, same as \fB\-g\fR ^GLOB.  GLOB can
@@ -385,15 +386,15 @@ patterns; thus nothing is matched.  This option may be repeated.
 .TP
 \fB\-\-filter\fR=\fICOMMANDS\fR
 Filter files through the specified COMMANDS first before searching.
-COMMANDS is a comma\-separated list of `exts:command [option ...]',
+COMMANDS is a comma\-separated list of `exts:command arguments',
 where `exts' is a comma\-separated list of filename extensions and
 `command' is a filter utility.  Files matching one of `exts' are
-filtered.  When `exts' is a `*', all files are filtered.  One or
-more `option' separated by spacing may be specified, which are
-passed verbatim to the command.  A `%' as `option' expands into the
-pathname to search.  For example, \fB\-\-filter\fR='pdf:pdftotext % \-'
+filtered.  A `*' matches any file.  The specified `command' may
+include arguments separated by spaces.  An argument may be quoted
+to include spacing, commas or a `%'.  A `%' argument expands into
+the pathname to search.  For example, \fB\-\-filter\fR='pdf:pdftotext % \-'
 searches PDF files.  The `%' expands into a `\-' when searching
-standard input.  When a `%' is not specified, a filter utility
+standard input.  When a `%' is not specified, the filter command
 should read from standard input and write to standard output.
 Option \fB\-\-label\fR=.ext may be used to specify extension `ext' when
 searching standard input.  This option may be repeated.
@@ -430,7 +431,7 @@ When `glob' ends with a `/', directories are matched, same as
 \fB\-\-include\-dir\fR='glob' and \fB\-\-exclude\-dir\fR='glob'.  A leading `/'
 matches the working directory.  Option \fB\-\-iglob\fR performs
 case\-insensitive name matching.  This option may be repeated and
-may be combined with options \fB\-M\fR, \fB\-O\fR and \fB\-t\fR to expand searches.  See
+may be combined with options \fB\-M\fR, \fB\-O\fR and \fB\-t\fR.  For more details, see
 `ugrep \fB\-\-help\fR globs' and `man ugrep' section GLOBBING for details.
 .TP
 \fB\-\-glob\-ignore\-case\fR
@@ -461,21 +462,23 @@ when the output is sent to a terminal.
 Display a help message on options related to WHAT when specified.
 In addition, `\fB\-\-help\fR regex' displays an overview of regular
 expressions, `\fB\-\-help\fR globs' displays an overview of glob syntax and
-conventions.  `\fB\-\-help\fR fuzzy' displays details of fuzzy search with
-option \fB\-Z\fR and `\fB\-\-help\fR format' displays a list of \fB\-\-format\fR fields.
+conventions, `\fB\-\-help\fR fuzzy' displays details of fuzzy search, and
+`\fB\-\-help\fR format' displays a list of option \fB\-\-format\fR=\fIFORMAT\fR fields.
 .TP
 \fB\-\-hexdump\fR[=[1\-8][a][bch][A[\fINUM\fR]][B[\fINUM\fR]][C[\fINUM\fR]]]
 Output matches in 1 to 8 columns of 8 hexadecimal octets.  The
-default is 2 columns or 16 octets per line.  Option `a' outputs a
+default is 2 columns or 16 octets per line.  Argument `a' outputs a
 `*' for all hex lines that are identical to the previous hex line,
 `b' removes all space breaks, `c' removes the character column, `h'
-removes hex spacing, `A' includes up to NUM hex lines after the
-match, `B' includes up to NUM hex lines before the match and `C'
-includes up to NUM hex lines.  When NUM is omitted, the matching
-line is included in the output.  See also options \fB\-U\fR, \fB\-W\fR and \fB\-X\fR.
+removes hex spacing, `A' includes up to NUM hex lines after a
+match, `B' includes up to NUM hex lines before a match and `C'
+includes up to NUM hex lines before and after a match.  Arguments
+`A', `B' and `C' are the same as options \fB\-A\fR, \fB\-B\fR and \fB\-C\fR when used
+with \fB\-\-hexdump\fR.  See also options \fB\-U\fR, \fB\-W\fR and \fB\-X\fR.
 .TP
 \fB\-\-hidden\fR, \fB\-.\fR
-Search hidden files and directories.
+Search hidden files and directories
+(enabled by default in grep compatibility mode).
 .TP
 \fB\-\-hyperlink\fR[=[\fIPREFIX\fR][+]]
 Hyperlinks are enabled for file names when colors are enabled.
@@ -571,7 +574,7 @@ Perform case insensitive matching, unless a pattern is specified
 with a literal upper case ASCII letter.
 .TP
 \fB\-\-json\fR
-Output file matches in JSON.  If \fB\-H\fR, \fB\-n\fR, \fB\-k\fR, or \fB\-b\fR is specified,
+Output file matches in JSON.  When \fB\-H\fR, \fB\-n\fR, \fB\-k\fR, or \fB\-b\fR is specified,
 additional values are output.  See also options \fB\-\-format\fR and \fB\-u\fR.
 .TP
 \fB\-K\fR [\fIMIN\fR,][\fIMAX\fR], \fB\-\-range\fR=[\fIMIN\fR,][\fIMAX\fR], \fB\-\-min\-line\fR=\fIMIN\fR, \fB\-\-max\-line\fR=\fIMAX\fR
@@ -613,14 +616,14 @@ signature "magic bytes" at the start of a file are compared to
 the MAGIC regex pattern.  When matching, the file will be searched.
 When MAGIC is preceded by a `!' or a `^', skip files with matching
 MAGIC signatures.  This option may be repeated and may be combined
-with options \fB\-O\fR and \fB\-t\fR to expand the search.  Every file on the
-search path is read, making searches potentially more expensive.
+with options \fB\-O\fR and \fB\-t\fR.  Every file on the search path is read,
+making recursive searches potentially more expensive.
 .TP
 \fB\-m\fR [\fIMIN\fR,][\fIMAX\fR], \fB\-\-min\-count\fR=\fIMIN\fR, \fB\-\-max\-count\fR=\fIMAX\fR
 Require MIN matches, stop after MAX matches when specified.  Output
 MIN to MAX matches.  For example, \fB\-m\fR1 outputs the first match and
-\fB\-c\fRm1, (with a comma) counts nonzero matches.  If \fB\-u\fR is specified,
-each individual match counts.  See also option \fB\-K\fR.
+\fB\-c\fRm1, (with a comma) counts nonzero matches.  When \fB\-u\fR or \fB\-\-ungroup\fR
+is specified, each individual match counts.  See also option \fB\-K\fR.
 .TP
 \fB\-\-match\fR
 Match all input.  Same as specifying an empty pattern to search.
@@ -628,7 +631,7 @@ Match all input.  Same as specifying an empty pattern to search.
 \fB\-\-max\-files\fR=\fINUM\fR
 Restrict the number of files matched to NUM.  Note that \fB\-\-sort\fR or
 \fB\-J\fR1 may be specified to produce replicable results.  If \fB\-\-sort\fR is
-specified, the number of threads spawned is limited to NUM.
+specified, then the number of threads spawned is limited to NUM.
 .TP
 \fB\-\-mmap\fR[=\fIMAX\fR]
 Use memory maps to search files.  By default, memory maps are used
@@ -654,17 +657,34 @@ matches lines with `A' or lines without a `B'.  To match lines with
 displays the search patterns applied.  See also options \fB\-\-and\fR,
 \fB\-\-andnot\fR, \fB\-\-bool\fR, \fB\-\-files\fR and \fB\-\-lines\fR.
 .TP
+\fB\-\-null\fR, \fB\-0\fR
+Output a zero byte after the file name.  This option can be used
+with commands such as `find \fB\-p\fRrint0' and `xargs \fB\-0\fR' to process
+arbitrary file names, even those that contain newlines.  See also
+options \fB\-H\fR or \fB\-\-with\-filename\fR and \fB\-\-null\-data\fR.
+.TP
+\fB\-\-null\-data\fR, \fB\-0\fR0
+Input and output are treated as sequences of lines with each line
+terminated by a zero byte instead of a newline; effectively swaps
+NUL with LF in the input and the output.  When combined with option
+\fB\-\-encoding\fR=\fIENCODING\fR, output each line terminated by a zero byte
+without affecting the input specified as per ENCODING.  Instead of
+option \fB\-\-null\-data\fR, option \fB\-\-encoding\fR=null\-data treats the input as
+a sequence of lines terminated by a zero byte without affecting the
+output.  Option \fB\-\-null\-data\fR is not compatible with UTF\-16/32 input.
+See also options \fB\-\-encoding\fR and \fB\-\-null\fR.
+.TP
 \fB\-O\fR \fIEXTENSIONS\fR, \fB\-\-file\-extension\fR=\fIEXTENSIONS\fR
 Only search files whose filename extensions match the specified
 comma\-separated list of EXTENSIONS, same as \fB\-g\fR '*.ext' for each
 `ext' in EXTENSIONS.  When an `ext' is preceded by a `!' or a `^',
 skip files whose filename extensions matches `ext', same as
 \fB\-g\fR '^*.ext'.  This option may be repeated and may be combined with
-options \fB\-g\fR, \fB\-M\fR and \fB\-t\fR to expand the recursive search.
+options \fB\-g\fR, \fB\-M\fR and \fB\-t\fR.
 .TP
 \fB\-o\fR, \fB\-\-only\-matching\fR
-Only the matching part of a pattern match is output.  If \fB\-A\fR, \fB\-B\fR or
-\fB\-C\fR is specified, fits the match and its context on a line within
+Only the matching part of a pattern match is output.  When \fB\-A\fR, \fB\-B\fR
+or \fB\-C\fR is specified, fits the match and its context on a line within
 the specified number of columns.
 .TP
 \fB\-\-only\-line\-number\fR
@@ -709,13 +729,15 @@ the default is 3 (300ms delay).  No whitespace may be given between
 \fB\-e\fR \fIPATTERN\fR, i.e. a PATTERN argument requires option \fB\-e\fR.  Press F1
 or CTRL\-Z to view the help screen.  Press F2 or CTRL\-Y to invoke a
 command to view or edit the file shown at the top of the screen.
-The command can be specified with option \fB\-\-view\fR, or defaults to
-environment variable PAGER when defined, or EDITOR.  Press Tab and
-Shift\-Tab to navigate directories and to select a file to search.
-Press Enter to select lines to output.  Press ALT\-l for option \fB\-l\fR
-to list files, ALT\-n for \fB\-n\fR, etc.  Non\-option commands include
-ALT\-] to increase context and ALT\-} to increase fuzzyness.  See
-also options \fB\-\-no\-confirm\fR, \fB\-\-delay\fR, \fB\-\-split\fR and \fB\-\-view\fR.
+The command can be specified with option \fB\-\-view\fR and defaults to
+environment variable PAGER when defined, or VISUAL or EDITOR.
+Press TAB or SHIFT\-TAB to navigate directories and to select a file
+to search.  Press ENTER to select lines to output.  Press ALT\-l for
+option \fB\-l\fR to list files, ALT\-n for \fB\-n\fR, etc.  Non\-option commands
+include ALT\-] to increase context and ALT\-} to increase fuzzyness.
+If ALT or OPTION keys are not available, then press CTRL\-O + KEY to
+switch option `KEY', or press F1 or CTRL\-Z for help and press KEY.
+See also options \fB\-\-no\-confirm\fR, \fB\-\-delay\fR, \fB\-\-split\fR and \fB\-\-view\fR.
 .TP
 \fB\-q\fR, \fB\-\-quiet\fR, \fB\-\-silent\fR
 Quiet mode: suppress all output.  Only search a file until a match
@@ -757,10 +779,11 @@ the saved configuration file.  A configuration file may be modified
 manually to specify one or more config[=\fIFILE\fR] to indirectly load
 the specified FILE, but recursive config loading is not allowed.
 .TP
-\fB\-\-separator\fR[=\fISEP\fR]
+\fB\-\-separator\fR[=\fISEP\fR], \fB\-\-context\-separator\fR=\fISEP\fR
 Use SEP as field separator between file name, line number, column
-number, byte offset and the matched line.  The default is a colon
-(`:') and a bar (`|') for multi\-line pattern matches.
+number, byte offset and the matched line.  The default separator is
+a colon (`:') and a bar (`|') for multi\-line pattern matches, and a
+dash (`\-') for context lines.  See also option \fB\-\-group\-separator\fR.
 .TP
 \fB\-\-split\fR
 Split the \fB\-Q\fR query TUI screen on startup.
@@ -797,25 +820,25 @@ with matching file signature magic bytes, as if passed to option
 the specified type.  Specifying the initial part of a type name
 suffices when the choice is unambiguous.  This option may be
 repeated.  The possible file types can be (\fB\-t\fRlist displays a list):
-`actionscript', `ada', `asm', `asp', `aspx', `autoconf', `automake',
-`awk', `Awk', `basic', `batch', `bison', `c', `c++',
-`clojure', `cpp', `csharp', `css', `csv', `dart', `Dart',
-`delphi', `elisp', `elixir', `erlang', `fortran', `gif', `Gif',
-`go', `groovy', `gsp', `haskell', `html', `jade', `java',
-`jpeg', `Jpeg', `js', `json', `jsp', `julia', `kotlin',
-`less', `lex', `lisp', `lua', `m4', `make', `markdown',
-`matlab', `node', `Node', `objc', `objc++', `ocaml', `parrot',
-`pascal', `pdf', `Pdf', `perl', `Perl', `php', `Php',
-`png', `Png', `prolog', `python', `Python', `r', `rpm',
-`Rpm', `rst', `rtf', `Rtf', `ruby', `Ruby', `rust',
-`scala', `scheme', `shell', `Shell', `smalltalk', `sql', `svg',
-`swift', `tcl', `tex', `text', `tiff', `Tiff', `tt',
-`typescript', `verilog', `vhdl', `vim', `xml', `Xml', `yacc',
-`yaml', `zig'.
+`actionscript', `ada', `adoc', `asm', `asp', `aspx', `autoconf',
+`automake', `awk', `Awk', `basic', `batch', `bison', `c',
+`c++', `clojure', `cpp', `csharp', `css', `csv', `dart',
+`Dart', `delphi', `elisp', `elixir', `erlang', `fortran', `gif',
+`Gif', `go', `groovy', `gsp', `haskell', `html', `jade',
+`java', `jpeg', `Jpeg', `js', `json', `jsp', `julia',
+`kotlin', `less', `lex', `lisp', `lua', `m4', `make',
+`markdown', `matlab', `node', `Node', `objc', `objc++', `ocaml',
+`parrot', `pascal', `pdf', `Pdf', `perl', `Perl', `php',
+`Php', `png', `Png', `prolog', `python', `Python', `r',
+`rpm', `Rpm', `rst', `rtf', `Rtf', `ruby', `Ruby',
+`rust', `scala', `scheme', `shell', `Shell', `smalltalk', `sql',
+`svg', `swift', `tcl', `tex', `text', `tiff', `Tiff',
+`tt', `typescript', `verilog', `vhdl', `vim', `xml', `Xml',
+`yacc', `yaml', `zig'.
 .TP
 \fB\-\-tabs\fR[=\fINUM\fR]
 Set the tab size to NUM to expand tabs for option \fB\-k\fR.  The value of
-NUM may be 1, 2, 4, or 8.  The default tab size is 8.
+NUM may be 1 (no expansion), 2, 4, or 8.  The default size is 8.
 .TP
 \fB\-\-tag\fR[=\fITAG\fR[,\fIEND\fR]]
 Disables colors to mark up matches with TAG.  END marks the end of
@@ -849,9 +872,9 @@ Use COMMAND to view/edit a file in \fB\-Q\fR query TUI by pressing CTRL\-Y.
 .TP
 \fB\-W\fR, \fB\-\-with\-hex\fR
 Output binary matches in hexadecimal, leaving text matches alone.
-This option is equivalent to the \fB\-\-binary\-files\fR=with\-hex option
-with \fB\-\-hexdump\fR=2C.  To omit the matching line from the hex output,
-combine option \fB\-\-hexdump\fR with option \fB\-W\fR.  See also option \fB\-U\fR.
+This option is equivalent to the \fB\-\-binary\-files\fR=with\-hex option.
+To omit the matching line from the hex output, use both options \fB\-W\fR
+and \fB\-\-hexdump\fR.  See also options \fB\-U\fR.
 .TP
 \fB\-w\fR, \fB\-\-word\-regexp\fR
 The PATTERN is searched for as a word, such that the matching text
@@ -862,11 +885,11 @@ connector punctuations such as underscore.
 \fB\-\-width\fR[=\fINUM\fR]
 Truncate the output to NUM visible characters per line.  The width
 of the terminal window is used if NUM is not specified.  Note that
-double wide characters in the output may result in wider lines.
+double\-width characters in the output may result in wider lines.
 .TP
 \fB\-X\fR, \fB\-\-hex\fR
-Output matches in hexadecimal.  This option is equivalent to the
-\fB\-\-binary\-files\fR=hex option with \fB\-\-hexdump\fR=2C.  To omit the matching
+Output matches and matching lines in hexadecimal.  This option is
+equivalent to the \fB\-\-binary\-files\fR=hex option.  To omit the matching
 line from the hex output use option \fB\-\-hexdump\fR.  See also option \fB\-U\fR.
 .TP
 \fB\-x\fR, \fB\-\-line\-regexp\fR
@@ -874,14 +897,15 @@ Select only those matches that exactly match the whole line, as if
 the patterns are surrounded by ^ and $.
 .TP
 \fB\-\-xml\fR
-Output file matches in XML.  If \fB\-H\fR, \fB\-n\fR, \fB\-k\fR, or \fB\-b\fR is specified,
+Output file matches in XML.  When \fB\-H\fR, \fB\-n\fR, \fB\-k\fR, or \fB\-b\fR is specified,
 additional values are output.  See also options \fB\-\-format\fR and \fB\-u\fR.
 .TP
 \fB\-Y\fR, \fB\-\-empty\fR
-Permits empty matches.  By default, empty matches are disabled,
-unless a pattern begins with `^' or ends with `$'.  With this
-option, empty\-matching patterns such as x? and x*, match all input,
-not only lines containing the character `x'.
+Empty\-matching patterns match all lines.  Normally, empty matches
+are not output, unless a pattern begins with `^' or ends with `$'.
+With this option, empty\-matching patterns, such as x? and x*, match
+all lines, not only lines with an `x' (enabled by default in grep
+compatibility mode).
 .TP
 \fB\-y\fR, \fB\-\-any\-line\fR, \fB\-\-passthru\fR
 Any line is output (passthru).  Non\-matching lines are output as
@@ -909,7 +933,7 @@ and compressed archives (e.g. .zip, .7z, .taz, .tgz, .tpz, .tbz,
 \&.tbz2, .tb2, .tz2, .tlz, .txz, .tzst) are searched and matching
 pathnames of files in archives are output in braces.  When used
 with option \fB\-\-zmax\fR=\fINUM\fR, searches the contents of compressed files
-and archives stored within archives up to NUM levels.  If \fB\-g\fR, \fB\-O\fR,
+and archives stored within archives up to NUM levels.  When \fB\-g\fR, \fB\-O\fR,
 \fB\-M\fR, or \fB\-t\fR is specified, searches files stored in archives whose
 filenames match globs, match filename extensions, match file
 signature magic bytes, or match file types, respectively.
@@ -918,10 +942,11 @@ bzip2 (requires suffix .bz, .bz2, .bzip2, .tbz, .tbz2, .tb2, .tz2),
 lzma and xz (requires suffix .lzma, .tlz, .xz, .txz),
 lz4 (requires suffix .lz4),
 zstd (requires suffix .zst, .zstd, .tzst),
-brotli (requires suffix .br).
+brotli (requires suffix .br),
+bzip3 (requires suffix .bz3).
 .TP
 \fB\-\-zmax\fR=\fINUM\fR
-When used with option \fB\-z\fR (\fB\-\-decompress\fR), searches the contents of
+When used with option \fB\-z\fR or \fB\-\-decompress\fR, searches the contents of
 compressed files and archives stored within archives by up to NUM
 expansion stages.  The default \fB\-\-zmax\fR=1 only permits searching
 uncompressed files stored in cpio, pax, tar, zip and 7z archives;
@@ -930,11 +955,6 @@ effectively ignored.  Specify \fB\-\-zmax\fR=2 to search compressed files
 and archives stored in cpio, pax, tar, zip and 7z archives.  NUM
 may range from 1 to 99 for up to 99 decompression and de\-archiving
 steps.  Increasing NUM values gradually degrades performance.
-.TP
-\fB\-0\fR, \fB\-\-null\fR
-Output a zero\-byte (NUL) after the file name.  This option can be
-used with commands such as `find \fB\-p\fRrint0' and `xargs \fB\-0\fR' to process
-arbitrary file names.
 .SH "EXIT STATUS"
 The \fBugrep\fR utility exits with one of the following values:
 .IP 0
@@ -1141,6 +1161,10 @@ if option \fB-H\fR is used: \fITEXT\fR, the quoted pathname and separator, \\"
 and \\\\ replace " and \\.
 .IP \fB%h\fR
 the quoted file pathname, \\" and \\\\ replace " and \\.
+.IP \fB%[\fR\fITEXT\fR\fB]I\fR
+if option \fB-H\fR is used: \fITEXT\fR, the pathname as XML character data and separator.
+.IP \fB%i\fR
+the file pathname as XML character data.
 .IP \fB%[\fR\fITEXT\fR\fB]N\fR
 if option \fB-n\fR is used: \fITEXT\fR, the line number and separator.
 .IP \fB%n\fR
@@ -1264,8 +1288,8 @@ When present, the argument must be placed in \fB[]\fR brackets, for example
 \fB%[\fR\fISEP\fR\fB]$\fR and \fB%u\fR are switches and do not send anything to
 the output.
 .PP
-The separator used by the \fB%F\fR, \fB%H\fR, \fB%N\fR, \fB%K\fR, \fB%B\fR,
-\fB%S\fR and \fB%G\fR fields may be changed by preceding the field by
+The separator used by the \fB%F\fR, \fB%H\fR, \fB%I\fR, \fB%N\fR, \fB%K\fR,
+\fB%B\fR, \fB%S\fR and \fB%G\fR fields may be changed by preceding the field by
 \fB%[\fR\fISEP\fR\fB]$\fR.  When \fB[\fR\fISEP\fR\fB]\fR is not provided, this
 reverts the separator to the default separator or the separator specified with
 \fB--separator\fR.
@@ -1447,7 +1471,7 @@ Display options related to "fuzzy" searching:
 $ ugrep --help fuzzy
 .PP
 .SH COPYRIGHT
-Copyright (c) 2021,2024 Robert A. van Engelen <engelen@acm.org>
+Copyright (c) 2021,2025 Robert A. van Engelen <engelen@acm.org>
 .PP
 \fBugrep\fR is released under the BSD\-3 license.  All parts of the software
 have reasonable copyright terms permitting free redistribution.  This includes
